@@ -6,6 +6,6 @@ class CreateJokeTagsTable < ActiveRecord::Migration
       t.integer :tag_id, null: false
       t.timestamps  null: false
     end
-    add_index :user_joke_tags, [:user_id, :joke_id, :tag_id], :unique => true
+    add_index :joke_tags, [:user_id, :joke_id, :tag_id], :unique => true
   end
 end
