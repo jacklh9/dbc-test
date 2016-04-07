@@ -1,3 +1,3 @@
 get '/' do
-  redirect :'/items'
+  erb :'/index'
 end

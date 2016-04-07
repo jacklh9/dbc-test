@@ -1,7 +1,5 @@
 # Delete current DB contents
 User.delete_all
-Condition.delete_all
-Item.delete_all
 
 # Create Users
 User.create!({
@@ -91,6 +89,3 @@ users = User.all
 
 puts "SEEDING COMPLETE"
 puts "#{User.count} Users created."
-puts "#{Condition.count} Conditions created."
-puts "#{Item.count} Items created."
-puts "#{Bid.count} Bids created."

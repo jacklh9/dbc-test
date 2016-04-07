@@ -26,10 +26,10 @@ get '/login' do
 end
 
 post '/login' do
-  @user = User.find_by(email: params[:user][:email])
-  if @user != nil && @user.authenticate(params[:user][:password])
-      session[:id] = @user.id
-      redirect to :'/'
+  user = User.find_by(email: params[:user][:email])
+  if user != nil && user.authenticate(params[:user][:password])
+      session[:id] = user.id
+      redirect to :"/profile/#{user.id}"
   else
     @errors = ["Username or password invalid"]
     status 401
@@ -40,11 +40,13 @@ end
 
 # Show
 get '/profile/:id' do
-    @items = Item.where(seller_id: params[:id])
-    @seller = User.find_by(id: params[:id])
-    halt :'404' if @seller.nil?
-
+  @profile_user = User.find_by(id: params[:id])
+  halt '404' if @profile_user.nil?
+  if current_user
   	erb :'/users/profile'
+  else
+    redirect '/login'
+  end
 end
 
 # Logout
