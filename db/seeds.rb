@@ -28,13 +28,13 @@ User.create!({
   email: "kirk@gmail.com"
   })
 
-5.times do
-  User.create({
-    name: Faker::Name.first_name,
-    email: Faker::Internet.email,
-    password: "password"
-  })
-end
+# 5.times do
+#   User.create({
+#     name: Faker::Name.first_name,
+#     email: Faker::Internet.email,
+#     password: "password"
+#   })
+# end
 users = User.all
 
 # Create conditions
