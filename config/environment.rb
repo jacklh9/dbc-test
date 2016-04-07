@@ -21,7 +21,7 @@ require "sinatra/reloader" if development?
 require 'erb'
 
 require 'bcrypt'
-require 'faker'
+#require 'faker'
 #require 'as-duration'
 
 # Some helper constants for path-centric logic
