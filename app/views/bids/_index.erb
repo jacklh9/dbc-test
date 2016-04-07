@@ -1,7 +1,0 @@
-<% if !bids.nil? %>
-	<% bids.each do |bid| %>
-    	<tr>
-    		<td><a href="/items/<%= bid.item.id %>"><%= bid.item.name_title %></a></td>
-    	</tr>
-    <% end %>
-<% end %>

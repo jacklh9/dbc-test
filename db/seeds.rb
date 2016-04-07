@@ -12,19 +12,19 @@ User.create!({
 
 User.create!({
   name: "Steve Jobs",
-  password: "macintosh",
+  password: "password",
   email: "steve@apple.com"
   })
 
 User.create!({
   name: "Bill Gates",
-  password: "windows10",
+  password: "password",
   email: "bill@ms.com"
   })
 
 User.create!({
   name: "William Shatner",
-  password: "startrek",
+  password: "password",
   email: "kirk@gmail.com"
   })
 
@@ -37,17 +37,17 @@ User.create!({
 # end
 users = User.all
 
-# Create conditions
-Condition.create!({ name: "new" })
-Condition.create!({ name: "used" })
-Condition.create!({ name: "mint" })
-Condition.create!({ name: "near-mint" })
-Condition.create!({ name: "good" })
-Condition.create!({ name: "fair" })
-Condition.create!({ name: "poor" })
-Condition.create!({ name: "other" })
-Condition.create!({ name: "unknown" })
-conditions = Condition.all
+# # Create conditions
+# Condition.create!({ name: "new" })
+# Condition.create!({ name: "used" })
+# Condition.create!({ name: "mint" })
+# Condition.create!({ name: "near-mint" })
+# Condition.create!({ name: "good" })
+# Condition.create!({ name: "fair" })
+# Condition.create!({ name: "poor" })
+# Condition.create!({ name: "other" })
+# Condition.create!({ name: "unknown" })
+# conditions = Condition.all
 
 # Create Items
 
