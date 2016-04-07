@@ -1,0 +1,12 @@
+<h1>Login</h1>
+
+<%= erb :'/_errors' %>
+
+<form method="post" action="/login">
+  <input type="hidden" name="_method" value="post">
+
+  <%= erb :'/_email_password_form' %>
+  <input autofocus class="reg_log" type="submit" value="Log In">
+  <%= erb :'/_reset_button' %>
+</form>
+<%= erb :'/_cancel_button' %>

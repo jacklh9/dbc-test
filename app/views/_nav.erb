@@ -1,0 +1,12 @@
+<nav>
+  <ul>
+   <li><a href="/">home</a></li>
+   <% if current_user %>
+    <li><a href="/profile/<%= current_user.id %>"><%= current_user.name %></a></li>
+    <li><a href="/logout">logout</a></li>
+   <% else %>
+    <li><a href="/register">register</a></li>
+    <li><a href="/login">login</a></li>
+   <% end %>
+  </ul>   
+</nav>

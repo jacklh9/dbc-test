@@ -1,0 +1,14 @@
+<h1>Registration</h1>
+
+<%= erb :'/_errors' %>
+
+<form method="post" action="/register">
+  <input type="hidden" name="_method" value="post">
+  <label class="reg_log" for="name">Name:</label>
+  <input class="reg_log" id="first_name" placeholder="Name" name="user[name]" type="text" value="<%= @user.name %>">
+
+  <%= erb :'/_email_password_form' %>
+  <input autofocus class="reg_log" type="submit" value="Register">
+  <%= erb :'/_reset_button' %>
+</form>
+<%= erb :'/_cancel_button' %>

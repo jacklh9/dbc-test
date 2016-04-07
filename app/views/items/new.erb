@@ -1,0 +1,12 @@
+<%= erb :'/_errors' %>
+
+<form id="list-item" method="post" action="/items">
+  <input type="hidden" name="_method" value="post">
+
+  <%= erb :'/items/_item_form' %>
+
+  <input type="submit" value="List Item">
+</form>
+<form method="get" action="/profile/<%= current_user.id %>">
+	<input type="submit" value="Cancel" class="submit cancel">
+</form>

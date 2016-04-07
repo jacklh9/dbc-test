@@ -1,0 +1,12 @@
+<%= erb :'/_errors' %>
+
+<form id="list-item" method="post" action="/items/<%= @item.id %>">
+  <input type="hidden" name="_method" value="patch">
+
+  <%= erb :'/items/_item_form' %>
+
+  <input type="submit" value="Save Item">
+</form>
+<form method="get" action="/items/<%= @item.id %>">
+	<input type="submit" value="Cancel" class="submit cancel">
+</form>

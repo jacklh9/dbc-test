@@ -1,0 +1,93 @@
+body {
+  font-size: 14px;
+  padding-bottom: 4em;
+  margin: 0 auto;
+  overflow: auto;
+  width: 800px;
+}
+
+header {
+	float: left;
+}
+
+nav {
+	float: right;
+}
+
+nav ul {
+	display: block;
+}
+
+nav li {
+	display: inline;
+	text-decoration: none;
+}
+
+main {
+	float: left;
+	clear: both;
+}
+
+/* **************  FORMS ************  */
+
+form#list-item {
+	border-style: solid;
+	border-color: black;
+	border-width: .5px;
+	padding: 10px;
+}
+
+form input {
+	display: block;
+}
+
+form select {
+	display: block;
+}
+
+form#list-item label.name_title, label.description, label.condition {
+	display: none;
+}
+
+form#list-item label.price, label.start, label.end {
+	display: inline;
+}
+
+form#list-item textarea, .name_title {
+	min-width: 50em;
+}
+
+/* **************  LOGIN ************  */
+
+.error-item {
+	color: red;
+}
+
+// Registration/Login/out fields/buttons
+.reg_log {
+	display: block;
+}
+
+label.reg_log {
+	display: none;
+}
+
+/* ************* AUCTIONS ****************** */
+
+table {
+	width: 100%;
+}
+
+
+table, th, td {
+	border-style: solid;
+	border-color: black;
+	border-width: .5px;
+	padding: 5px;
+}
+
+/* ************* AUCTION ITEM DETAIL **** */
+#bid-container {
+
+}
+

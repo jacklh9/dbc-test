@@ -1,0 +1,47 @@
+<table>
+	<thead>
+		<tr>
+			<th colspan="2"><%= @item.name_title %></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Condition: <%= @item.condition.name %></td>
+			<td>Price: $<%= @item.price %></td>
+		</tr>
+		<tr>
+			<td>Start: <%= @item.auction_start %></td>
+			<td>End: <%= @item.auction_end %></td>
+		</tr>
+		<tr>
+			<td>Bids: <%= @item.bids.count %></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="2"><%= @item.description %></td>
+		</tr>
+	</tbody>
+</table>
+
+<div id="bid-container">
+	<% if current_user && current_user != @item.seller %>
+		<% if @item.is_bidder? current_user %>
+			<p>Thank you for your bid. Good Luck!</p>
+		<% else %>
+			<form method="post" action="/bids/new">
+				<input type="hidden" name="bid[bidder_id]" value="<%= current_user.id %>">
+				<input type="hidden" name="bid[item_id]" value="<%= @item.id %>">
+
+			 	<input class="bid_price" placeholder="0.00" name="bid[price]" type="text">
+
+				<input autofocus type="submit" value="Place Bid" class="submit">
+			</form>
+		<% end %>
+	<% elsif current_user &&  current_user == @item.seller %>
+		<%= erb :'/items/_item_edit_button', locals: { item: @item } %>
+	<% else %>
+		<p>To place a bid please <a href="/login">login</a> or <a href="/register">register</a>.</p>
+	<% end %>
+</div>
+
+<%= erb :'_return_button' %>

@@ -1,0 +1,8 @@
+<p>Are you sure you want to log out?</p>
+
+<form method="post" action="/logout">
+  <input type="hidden" name="_method" value="delete">
+  <button class="reg_log" type="submit">Log Out</button>
+</form>
+
+<%= erb :'/_cancel_button' %>

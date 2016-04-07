@@ -1,0 +1,7 @@
+ <select class="condition" name="item[condition_id]" required>
+ 	<option value="">Select Condition</option>
+ 	<% conditions.each do |condition| %>
+ 		<option class="condition" value="<%= condition.id %>"><%= condition.name %></option>
+ 	<% end %>
+</select> 
+
