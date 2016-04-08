@@ -2,7 +2,14 @@
   <% if @joke %>
     <p><%= "#{@joke.content}" %></p>
     <% if current_user && @display_button%>
-      <a href='/favorite/<%= @joke.id %>' name='favorite' value='<%= @joke.id %>' %>Favorite this joke.</a>
+      <form action='/favorite/<%= @joke.id %>' method='POST'>
+      <input type='submit' name='submit' value='Favorite this joke'/>
+      </form>
+      <% elsif current_user && !@display_button %>
+      <form action='/favorite/<%= @joke.id %>' method='POST'>
+        <input type='hidden' name='_method' value='DELETE'>
+      <input type='submit' name='submit' value='Remove from favorites'/>
+      </form>
     <% end %>
   <% end %>
 </section>

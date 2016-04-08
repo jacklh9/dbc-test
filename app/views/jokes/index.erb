@@ -1,7 +1,7 @@
 <% if current_user && current_user == @user %>
-	<h1><%= @user %>'s Collections <%= @tag.name %></h1>
+	<h1><%= @user %>'s Collections</h1>
 <% else %>
 	<h1>Global Jokes</h1>
 <% end %>
 
-<%= erb :'/jokes/_index', layout: false, locals: { max_joke_title_length: @max_joke_title_length } %>
+<%= erb :'/jokes/_index', layout: false, locals: { max_joke_title_length: @max_joke_title_length, title: @title } %>
