@@ -72,10 +72,10 @@ post '/jokes' do
   erb :'/index'
 end
 
-get '/favorite' do
+get '/favorite/:id' do
   puts params
   redirect to '/logout' unless current_user
-  @joke = Joke.find(params[:joke])
+  @joke = Joke.find(params[:id])
   @user_joke = UserJoke.new
   @user_joke.user = current_user
   @user_joke.joke = @joke
