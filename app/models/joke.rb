@@ -8,16 +8,10 @@ class Joke < ActiveRecord::Base
 
   MAX_HASH_LENGTH = 20
 
-  def hash
-  	joke_hash
-  end
-
-  def hash=(joke)
-    self.joke_hash = Joke.generate_hash(joke)
-  end
-
-  def self.generate_hash(joke)
-  	joke_hash = Digest::MD5.hexdigest joke
+  def self.generate_hash(content)
+    md5 = Digest::MD5.new
+    md5 << "#{content}"
+  	joke_hash = md5.hexdigest 
     joke_hash[0..MAX_HASH_LENGTH]
   end
 
@@ -37,7 +31,7 @@ class Joke < ActiveRecord::Base
   	if existing_joke
   		return existing_joke
   	else
-  		Joke.create(content: content, hash: content)
+  		Joke.create(content: content, joke_hash: joke_hash)
   	end
   end
 
