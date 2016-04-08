@@ -1,3 +1,10 @@
+get '/jokes/:id' do
+	@joke = Joke.find_by(id: params[:id])
+	halt '404' if @joke.nil?
+	erb :'/jokes/show'
+end
+
+
 post '/jokes' do
   API_KEY = ENV['JOKE_API_KEY']
   API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"

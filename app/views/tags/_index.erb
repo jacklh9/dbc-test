@@ -1,0 +1,16 @@
+<table>
+	<thead>
+		<tr>
+			<th>Tags</th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if @tags %>
+			<% @tags.each do |tag| %>
+				<tr>
+					<td><a href="/tags/<%= tag.id %>"><%= tag.name %></a></td>
+				</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>

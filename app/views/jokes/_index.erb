@@ -1,0 +1,17 @@
+<table>
+	<thead>
+		<tr>
+			<th><%= @tag.name %></th>
+		</tr>
+	</thead>
+	<tbody>
+		<% if @jokes %>
+			<% @jokes.each do |joke| %>
+				<% snippet = joke.content[0..max_joke_title_length] %>
+				<tr>
+					<td><a href="/jokes/<%= joke.id %>"><%= snippet %></a></td>
+				</tr>
+			<% end %>
+		<% end %>
+	</tbody>
+</table>
