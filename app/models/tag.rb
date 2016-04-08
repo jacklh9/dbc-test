@@ -1,6 +1,7 @@
 class Tag < ActiveRecord::Base
   validates :name, presence: true, uniqueness: { scope: :user_id }
 
+  has_many :joke_tags
   has_many :jokes, through: :joke_tags
   belongs_to :user
 
@@ -30,20 +31,6 @@ class Tag < ActiveRecord::Base
   # Do all the site-owned tags (user_id: nil) already exist in the database?
   def self.site_tags_exist?(tags)
   	tags.all?{|tag| Tag.find_by(name: tag, user_id: nil) }
-  end
-
-  # Given a collection of tag names, adds any that
-  # are missing from the database.
-  # Returns true if successful, false otherwise.
-  def self.add_missing_tags(tag_names)
-  	tag_names.all? do |name|
-  		begin
-	  		tag = Tag.find_or_create_by(name: name)
-	  		tag.save
-	  	rescue
-	  		false
-	  	end
-	end
   end
 
 end

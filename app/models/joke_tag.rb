@@ -5,4 +5,6 @@ class JokeTag < ActiveRecord::Base
 
   belongs_to :tag
   belongs_to :joke
+  belongs_to :user
 end
+

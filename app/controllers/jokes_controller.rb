@@ -13,14 +13,14 @@ post '/jokes' do
 	keywords_list = Tag.tags_list(keywords)
 	categories = Tag.clean_tags_array(params[:categories])
 	categories_list = Tag.tags_list(categories)
-	tags = keywords
-	tags.concat(categories)
+	tag_names = keywords
+	tag_names.concat(categories)
 
   # Keywords Required
   if keywords.size > 0
   
-  	if Tag.site_tags_exist?(tags)
-		@joke = Joke.get_random_joke(tags)
+  	if Tag.site_tags_exist?(tag_names)
+		@joke = Joke.get_random_joke(tag_names)
  	else
 	  	# Joke API
 	    url = API_URL
@@ -44,12 +44,11 @@ post '/jokes' do
 		  puts joke_collection
 		  joke_collection.each do |joke_data|
 		  	puts joke_data
-		  	tags.concat(Tag.clean_tags_array(joke_data["category"]))	# Add API's own category to our database of tags
-		  	tags.uniq!
+		  	tag_names.concat(Tag.clean_tags_array(joke_data["category"]))	# Add API's own category to our database of tags
+		  	tag_names.uniq!
 		  	joke_object = Joke.add_joke(joke_data["joke"])
-		  	if joke_object.save && Tag.add_missing_tags(tags)
-		  	  joke_object.tags << tags
-		  	  @joke = Joke.get_random_joke(tags)
+		  	if joke_object.valid? && joke_object.add_missing_tags(tag_names)
+		  	  @joke = Joke.get_random_joke(tag_names)
 		  	else
 		  	  status 500
 		  	  halt '500'
@@ -65,6 +64,9 @@ post '/jokes' do
 	@errors << "Keywords is required"
   end
 
+  if !@joke
+  	@errors << "No results found."
+  end
   erb :'/index'
 end
 
