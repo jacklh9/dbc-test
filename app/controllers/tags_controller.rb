@@ -3,7 +3,7 @@
 # Show system tags
 get '/tags' do
 	@user = nil  # Explicitly stating that system tags are indicated by user_id = nil
-	@tags = Tag.where(user: nil)
+	@tags = Tag.where(user: nil).order(name: :ASC)
 	erb :'/tags/index'
 end
 
@@ -21,7 +21,7 @@ end
 get '/tags/:id' do
 	@user = nil  # Explicitly stating that system tags are indicated by user_id = nil
 	@tag = Tag.find_by(id: params[:id])
-	@jokes = @tag.jokes
+	@jokes = @tag.jokes.sort{|a,b| a.content <=> b.content}
 	@title = @tag.name
 	@max_joke_title_length = MAX_JOKE_TITLE_LEN
 	erb :'/jokes/index'
