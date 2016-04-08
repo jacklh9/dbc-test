@@ -65,7 +65,11 @@ post '/jokes' do
   	status 422
 	@errors << "Keywords is required"
   end
-
+  if !current_user.jokes.include? @joke
+    @display_button = true
+  else
+    @display_button = false
+  end
   if !@joke
   	@errors << "No results found."
   end
@@ -73,17 +77,21 @@ post '/jokes' do
 end
 
 get '/favorite/:id' do
-  puts params
   redirect to '/logout' unless current_user
   @joke = Joke.find(params[:id])
-  @user_joke = UserJoke.new
-  @user_joke.user = current_user
-  @user_joke.joke = @joke
-  if @user_joke.save
-    redirect to "/profile/#{current_user.id}"
+  if !current_user.jokes.include? @joke
+    @user_joke = UserJoke.new
+    @user_joke.user = current_user
+    @user_joke.joke = @joke
+    puts @user_joke
+    if @user_joke.save
+      redirect to "/profile/#{current_user.id}"
+    else
+      status 500
+      @errors = "Something went wrong"
+      erb :'index'
+    end
   else
-    status 500
-    @errors = "Something went wrong"
-    erb :'index'
+    redirect to "/profile/#{current_user.id}"
   end
 end
