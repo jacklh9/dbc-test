@@ -1,5 +1,10 @@
 get '/jokes/:id' do
 	@joke = Joke.find_by(id: params[:id])
+  if !current_user.favorite_jokes.include? @joke
+    @display_button = true
+  else
+    @display_button = false
+  end
 	halt '404' if @joke.nil?
 	erb :'/jokes/show'
 end
@@ -72,7 +77,7 @@ post '/jokes' do
   	status 422
 	@errors << "Keywords is required"
   end
-  if !current_user.jokes.include? @joke
+  if !current_user.favorite_jokes.include? @joke
     @display_button = true
   else
     @display_button = false
@@ -83,10 +88,10 @@ post '/jokes' do
   erb :'/index'
 end
 
-get '/favorite/:id' do
-  redirect to '/logout' unless current_user
+post '/favorite/:id' do
+  redirect to '/login' unless current_user
   @joke = Joke.find(params[:id])
-  if !current_user.jokes.include? @joke
+  if !current_user.favorite_jokes.include? @joke
     @user_joke = UserJoke.new
     @user_joke.user = current_user
     @user_joke.joke = @joke
@@ -101,4 +106,12 @@ get '/favorite/:id' do
   else
     redirect to "/profile/#{current_user.id}"
   end
+end
+
+delete '/favorite/:id' do
+  redirect to '/login' unless current_user
+  @joke = Joke.find_by(id: params[:id])
+  current_user.favorite_jokes.delete(@joke)
+  redirect "/profile/#{current_user.id}"
+
 end
