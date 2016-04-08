@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   has_many :user_jokes
   has_many :joke_tags
-  has_many :jokes, through: :user_jokes
+  has_many :favorite_jokes, through: :user_jokes, source: :joke
   has_many :tags
 
   MIN_PASSWORD_LENGTH = 8

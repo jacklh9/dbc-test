@@ -5,5 +5,6 @@
 <% end %>
 
 <div id="user-joke-tags-container">
+  <%= erb :'jokes/_index', locals: { max_joke_title_length: @max_joke_title_length, title: "Favorite Jokes" } %>
 </div>
 

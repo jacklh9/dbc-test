@@ -22,7 +22,7 @@ end
 # Login
 get '/login' do
   @user = User.new
-  erb :'/users/login' 
+  erb :'/users/login'
 end
 
 post '/login' do
@@ -43,6 +43,8 @@ get '/profile/:id' do
   @profile_user = User.find_by(id: params[:id])
   halt '404' if @profile_user.nil?
   if current_user
+    @jokes = current_user.favorite_jokes
+    @max_joke_title_length = MAX_JOKE_TITLE_LEN
   	erb :'/users/profile'
   else
     redirect '/login'
@@ -60,7 +62,7 @@ end
 
 delete '/logout' do
 	if current_user
-	  session[:id] = nil	
+	  session[:id] = nil
 	  redirect '/'
 	else
 		redirect '/login'
