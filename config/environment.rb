@@ -21,6 +21,7 @@ require "sinatra/reloader" if development?
 require 'erb'
 
 require 'bcrypt'
+require 'unirest'
 #require 'faker'
 #require 'as-duration'
 

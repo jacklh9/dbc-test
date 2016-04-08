@@ -1,2 +1,16 @@
 <h1>Index</h1>
 
+<%= erb :'_errors' %>
+
+<form method="post" action="/jokes">
+
+  <label>Keywords:</label>
+  <input name="keywords" placeholder="required">
+
+  <label>Category</label>
+  <input name="category" placeholder="optional">
+
+  <input type="submit" name="submit" text="Find Jokes">
+
+</form>
+
