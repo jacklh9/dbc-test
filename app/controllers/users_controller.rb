@@ -43,7 +43,7 @@ get '/profile/:id' do
   @profile_user = User.find_by(id: params[:id])
   halt '404' if @profile_user.nil?
   if current_user
-    @jokes = current_user.favorite_jokes
+    @jokes = current_user.favorite_jokes.sort{|a,b| a.content <=> b.content}
     @max_joke_title_length = MAX_JOKE_TITLE_LEN
   	erb :'/users/profile'
   else
