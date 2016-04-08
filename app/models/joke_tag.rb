@@ -3,6 +3,8 @@ class JokeTag < ActiveRecord::Base
   validates :tag_id, presence: true
   validates :user_id, uniqueness: true
 
-  belongs_to :tags
-  belongs_to :jokes
+  belongs_to :tag
+  belongs_to :joke
+  belongs_to :user
 end
+

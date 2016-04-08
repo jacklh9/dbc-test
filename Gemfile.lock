@@ -19,6 +19,7 @@ GEM
     backports (3.6.4)
     bcrypt (3.1.11)
     builder (3.2.2)
+    digest (0.0.1)
     i18n (0.7.0)
     json (1.8.2)
     mime-types (1.25.1)
@@ -62,6 +63,7 @@ DEPENDENCIES
   activerecord (~> 4.2.0)
   activesupport (~> 4.2.0)
   bcrypt
+  digest
   pg
   rack (= 1.5.2)
   rake

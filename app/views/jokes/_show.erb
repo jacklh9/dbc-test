@@ -1,0 +1,6 @@
+<section>
+  <% if @joke %>
+    <p><%= "#{@joke.content}" %></p>
+    <a href='/favorite' %>Favorite this joke.</a>
+  <% end %>
+</section>

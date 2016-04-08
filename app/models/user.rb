@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   validates :email, {presence: true, uniqueness: true}
   validates :password_hash, presence: true
 
+  has_many :user_jokes
+  has_many :joke_tags
   has_many :jokes, through: :user_jokes
   has_many :tags
 

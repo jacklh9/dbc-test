@@ -1,5 +1,8 @@
 # Delete current DB contents
 User.delete_all
+Joke.delete_all
+JokeTag.delete_all
+Tag.delete_all
 
 # Create Users
 User.create!({
@@ -89,3 +92,7 @@ users = User.all
 
 puts "SEEDING COMPLETE"
 puts "#{User.count} Users created."
+puts "#{Joke.count} Jokes created."
+puts "#{JokeTag.count} JokeTags created."
+puts "#{Tag.count} Tags created."
+

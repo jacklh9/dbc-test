@@ -16,7 +16,9 @@ gem 'rake'
 gem 'rack', '1.5.2'
 gem 'shotgun'
 
+# Project Gems
 gem 'bcrypt'
+gem 'digest'
 gem 'unirest'
 
 # group :test do
