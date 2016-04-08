@@ -4,6 +4,11 @@ body {
   margin: 0 auto;
   overflow: auto;
   width: 800px;
+  background-image: url('/imgs/brick.jpg');
+}
+
+* li, td, th, p {
+	background-color: white;
 }
 
 header {
