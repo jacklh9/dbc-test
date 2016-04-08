@@ -1,3 +1,10 @@
+get '/jokes/:id' do
+	@joke = Joke.find_by(id: params[:id])
+	halt '404' if @joke.nil?
+	erb :'/jokes/show'
+end
+
+
 post '/jokes' do
   API_KEY = ENV['JOKE_API_KEY']
   API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
@@ -65,25 +72,33 @@ post '/jokes' do
   	status 422
 	@errors << "Keywords is required"
   end
-
+  if !current_user.jokes.include? @joke
+    @display_button = true
+  else
+    @display_button = false
+  end
   if !@joke
   	@errors << "No results found."
   end
   erb :'/index'
 end
 
-get '/favorite' do
-  puts params
+get '/favorite/:id' do
   redirect to '/logout' unless current_user
-  @joke = Joke.find(params[:joke])
-  @user_joke = UserJoke.new
-  @user_joke.user = current_user
-  @user_joke.joke = @joke
-  if @user_joke.save
-    redirect to "/profile/#{current_user.id}"
+  @joke = Joke.find(params[:id])
+  if !current_user.jokes.include? @joke
+    @user_joke = UserJoke.new
+    @user_joke.user = current_user
+    @user_joke.joke = @joke
+    puts @user_joke
+    if @user_joke.save
+      redirect to "/profile/#{current_user.id}"
+    else
+      status 500
+      @errors = "Something went wrong"
+      erb :'index'
+    end
   else
-    status 500
-    @errors = "Something went wrong"
-    erb :'index'
+    redirect to "/profile/#{current_user.id}"
   end
 end

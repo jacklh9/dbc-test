@@ -15,6 +15,11 @@ class Joke < ActiveRecord::Base
     joke_hash[0..MAX_HASH_LENGTH]
   end
 
+  def self.get_joke(tag_names)
+    jokes = Joke.joins(:tags).where(tags: { name: tag_names })
+    (jokes.size > 0) ? jokes : nil
+  end
+
   def self.get_random_joke(tag_names)
     # OR
     # tags = Tag.where(name: tag_names)
