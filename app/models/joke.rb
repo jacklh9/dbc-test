@@ -6,6 +6,10 @@ class Joke < ActiveRecord::Base
 
   MAX_HASH_LENGTH = 50
 
+  def hash
+  	self.joke_hash
+  end
+
   def hash=(joke)
     self.joke_hash = Digest::MD5.new(joke)[0..MAX_HASH_LENGTH]
   end
