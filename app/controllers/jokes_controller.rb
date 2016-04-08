@@ -6,7 +6,8 @@ post '/jokes' do
   @errors = []
 
   	puts params[:keywords]
-
+  @keywords = params[:keywords]
+  @category = params[:category]
 	# Data cleanse
 	keywords = Tag.clean_tags_array(params[:keywords])
 	keywords_list = Tag.tags_list(keywords)
@@ -17,7 +18,7 @@ post '/jokes' do
 
   # Keywords Required
   if keywords.size > 0
-  
+
   	if Tag.site_tags_exist?(tag_names)
 		@joke = Joke.get_random_joke(tag_names)
  	else
@@ -70,17 +71,18 @@ post '/jokes' do
   erb :'/index'
 end
 
-# get '/favorite' do
-#   redirect to '/logout' unless current_user
-#   @joke = Joke.find(params[:joke-id])
-#   @user_joke = UserJoke.new
-#   @user_joke.user = current_user
-#   @user_joke.joke = @joke
-#   if @user_joke.save
-#     redirect to "/profile/#{current_user.id}"
-#   else
-#     status 422
-#     @errors = "Something went wrong"
-#     erb :'index'
-#   end
-# end
+get '/favorite' do
+  puts params
+  redirect to '/logout' unless current_user
+  @joke = Joke.find(params[:joke])
+  @user_joke = UserJoke.new
+  @user_joke.user = current_user
+  @user_joke.joke = @joke
+  if @user_joke.save
+    redirect to "/profile/#{current_user.id}"
+  else
+    status 500
+    @errors = "Something went wrong"
+    erb :'index'
+  end
+end
