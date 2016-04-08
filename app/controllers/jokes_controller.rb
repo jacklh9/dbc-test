@@ -1,4 +1,3 @@
-
 post '/jokes' do
   API_KEY = "4tlyur24RtmshjkbmQB7t5PR1OQ9p1mYyIdjsn8kgVQRQBscQX"
   API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
@@ -31,6 +30,7 @@ post '/jokes' do
 		end
 
 		# Query Joke API, create hash and add jokes
+		puts "CONTACTING URL: #{url}"
 
 		response = Unirest.get url,
 		  headers:{
@@ -40,7 +40,6 @@ post '/jokes' do
 
 		if response
 		  joke_collection = response.body
-		  puts "URL: #{url}"
 		  puts "JOKE_COLLECTION: #{joke_collection}"
 		  joke_collection.each do |joke_data|
 		  	puts "JOKE DATA: #{joke_data}"

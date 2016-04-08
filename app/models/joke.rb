@@ -42,15 +42,21 @@ class Joke < ActiveRecord::Base
         begin
           tag = Tag.find_or_create_by(name: "#{tag_name}")
           if !self.tags.include? tag
+            puts "Adding tag '#{tag}' to joke_id #{self.id}"
             self.tags << tag
-            self.save
+            if self.tags.include? tag
+              puts "SUCCESS: Adding tag '#{tag}' to joke_id #{self.id}"
+            else
+              puts "FAIL: Adding tag '#{tag}' to joke_id #{self.id}"
+            end  
           else
             true
           end
         rescue
+          puts "Error associating tag '#{tag}' to joke_id #{self.id}"
           false
-        end
-      end
+        end # begin/rescue/end
+      end # tag_names.each
     end
   end
 
