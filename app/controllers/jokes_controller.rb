@@ -1,44 +1,57 @@
-API_KEY = "4tlyur24RtmshjkbmQB7t5PR1OQ9p1mYyIdjsn8kgVQRQBscQX"
-API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
 
 post '/jokes' do
-  @categories = params[:categories].downcase.split(',').map(&:strip).map{ |c| c.gsub(/\s{2,}/, ' ')}
-  @keywords = params[:keywords].downcase.split(',').map(&:strip).map{ |k| k.gsub(/\s{2,}/, ' ')}
+  API_KEY = "4tlyur24RtmshjkbmQB7t5PR1OQ9p1mYyIdjsn8kgVQRQBscQX"
+  API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
 
-  url = API_URL
-  @errors = []
+  # Data cleanse
+  categories = Tags.clean_tags_array(params[:categories])
+  categories_list = Tags.tags_list(@categories)
+  keywords = Tags.clean_tags_array(params[:keywords])
+  keywords_list = Tags.tags_list(@keywords)
+  tags = categories
+  tags.concat(keywords)
 
-  # Optional
-  if @categories.size > 0
-    url += "category=#{@categories.join(',')}"
-  end
-
-  # Required
-  if @keywords.size > 0
-    url += "&keywords=#{@keywords.join(',')}&numJokes=1"
-	  # response = Unirest.get url,
-	  # headers:{
-	  #   "X-Mashape-Key": API_KEY,
-	  #   "Accept": "application/json"
-	  # }
-
-	  # if response
-	  #   data = response.body.first
-	  #   @joke = (data) ? data["joke"] : "No results returned."
-	  # else
-	  #   # Deal with down API server
-	  # end
-	  # puts @joke
-  	  puts @keywords.size
-	  puts url
+  if Tag.site_tags_exist?(tags)
+  	# Return random joke from the database
   else
-    @errors << "Keywords is required"
+  	# Add [missing] tags to database
+  	if Tag.add_missing_tags(tags)
+	  	# Query Joke API, create hash and add jokes, tags to database if
+	  	# hashes don't exist
+	  url = API_URL
+	  @errors = []
+
+	  # Optional
+	  if @categories.size > 0
+	    url += "category=#{@categories_list}"
+	  end
+
+	  # Required
+	  if @keywords.size > 0
+	    
+	    url += "&keywords=#{@keywords_list}&numJokes=1"
+		  # response = Unirest.get url,
+		  # headers:{
+		  #   "X-Mashape-Key": API_KEY,
+		  #   "Accept": "application/json"
+		  # }
+
+		  # if response
+		  #   data = response.body.first
+		  #   @joke = (data) ? data["joke"] : "No results returned."
+		  # else
+		  #   # Deal with down API server
+		  # end
+		  # puts @joke
+	  	  puts @keywords.size
+		  puts url
+	  else
+	    @errors << "Keywords is required"
+	  end
   end
 
   erb :'/index'
 end
-
-
 
 # get '/favorite' do
 #   redirect to '/logout' unless current_user
