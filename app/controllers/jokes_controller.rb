@@ -1,7 +1,7 @@
 post '/jokes' do
-  API_KEY = "4tlyur24RtmshjkbmQB7t5PR1OQ9p1mYyIdjsn8kgVQRQBscQX"
+  API_KEY = ENV['JOKE_API_KEY']
   API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
-  MAX_JOKES = 2
+  MAX_JOKES = 5
   MIN_JOKE_RATING = 0
   @errors = []
 

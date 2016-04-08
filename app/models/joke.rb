@@ -16,8 +16,12 @@ class Joke < ActiveRecord::Base
   end
 
   def self.get_random_joke(tag_names)
-    tags = Tag.where(name: tag_names)
-    jokes = tags.map{|tag| tag.jokes }.flatten
+    # OR
+    # tags = Tag.where(name: tag_names)
+    # jokes = tags.map{|tag| tag.jokes }.flatten
+
+    # OR
+    jokes = Joke.joins(:tags).where(tags: { name: tag_names })
   	(jokes.size > 0) ? jokes.sample : nil
   end
 
@@ -39,23 +43,27 @@ class Joke < ActiveRecord::Base
   def add_missing_tags(tag_names)
     if tag_names
       tag_names.each do |tag_name|
-        begin
-          tag = Tag.find_or_create_by(name: "#{tag_name}")
+        # begin
+          tag = Tag.find_or_create_by(name: tag_name)
           if !self.tags.include? tag
             puts "Adding tag '#{tag}' to joke_id #{self.id}"
             self.tags << tag
+            puts "Shovelled tag '#{tag} to joke_id #{self.id}"
+            puts "Checking if in self.tags"
             if self.tags.include? tag
               puts "SUCCESS: Adding tag '#{tag}' to joke_id #{self.id}"
+              true
             else
               puts "FAIL: Adding tag '#{tag}' to joke_id #{self.id}"
+              false
             end  
           else
             true
           end
-        rescue
-          puts "Error associating tag '#{tag}' to joke_id #{self.id}"
-          false
-        end # begin/rescue/end
+        # # rescue
+        #   puts "Error associating tag '#{tag}' to joke_id #{self.id}"
+        #   false
+        # # end # begin/rescue/end
       end # tag_names.each
     end
   end
