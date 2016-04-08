@@ -1,6 +1,6 @@
 get '/jokes/:id' do
 	@joke = Joke.find_by(id: params[:id])
-  if !current_user.favorite_jokes.include? @joke
+  if current_user && (!current_user.favorite_jokes.include? @joke)
     @display_button = true
   else
     @display_button = false
@@ -77,7 +77,7 @@ post '/jokes' do
   	status 422
 	@errors << "Keywords is required"
   end
-  if !current_user.favorite_jokes.include? @joke
+  if current_user && (!current_user.favorite_jokes.include? @joke)
     @display_button = true
   else
     @display_button = false
@@ -91,7 +91,7 @@ end
 post '/favorite/:id' do
   redirect to '/login' unless current_user
   @joke = Joke.find(params[:id])
-  if !current_user.favorite_jokes.include? @joke
+  if current_user && (!current_user.favorite_jokes.include? @joke)
     @user_joke = UserJoke.new
     @user_joke.user = current_user
     @user_joke.joke = @joke
