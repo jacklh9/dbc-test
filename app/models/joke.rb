@@ -31,6 +31,7 @@ class Joke < ActiveRecord::Base
   	if existing_joke
   		return existing_joke
   	else
+      puts "joke_hash: #{joke_hash}"
   		Joke.create(content: content, joke_hash: joke_hash)
   	end
   end
