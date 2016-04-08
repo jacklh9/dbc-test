@@ -16,10 +16,8 @@ class Joke < ActiveRecord::Base
   end
 
   def self.get_random_joke(tag_names)
-    tags = tag_names.map do |tag_name|
-      Tag.find_by(name: "#{tag_name}")
-    end
-  	jokes = Joke.where(tags: tags)
+    tags = Tag.where(name: tag_names)
+    jokes = tags.map{|tag| tag.jokes }.flatten
   	(jokes.size > 0) ? jokes.sample : nil
   end
 
@@ -31,7 +29,6 @@ class Joke < ActiveRecord::Base
   	if existing_joke
   		return existing_joke
   	else
-      puts "joke_hash: #{joke_hash}"
   		Joke.create(content: content, joke_hash: joke_hash)
   	end
   end

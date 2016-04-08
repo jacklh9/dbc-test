@@ -40,12 +40,13 @@ post '/jokes' do
 
 		if response
 		  joke_collection = response.body
-		  puts url
-		  puts joke_collection
+		  puts "URL: #{url}"
+		  puts "JOKE_COLLECTION: #{joke_collection}"
 		  joke_collection.each do |joke_data|
-		  	puts joke_data
+		  	puts "JOKE DATA: #{joke_data}"
 		  	tag_names.concat(Tag.clean_tags_array(joke_data["category"]))	# Add API's own category to our database of tags
 		  	tag_names.uniq!
+		  	puts "TAGS: #{tag_names}"
 		  	joke_object = Joke.add_joke(joke_data["joke"])
 		  	if joke_object.valid? && joke_object.add_missing_tags(tag_names)
 		  	  @joke = Joke.get_random_joke(tag_names)
