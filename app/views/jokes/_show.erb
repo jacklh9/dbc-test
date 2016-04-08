@@ -1,6 +1,8 @@
 <section>
   <% if @joke %>
     <p><%= "#{@joke.content}" %></p>
-    <a href='/favorite' %>Favorite this joke.</a>
+    <% if current_user && @display_button%>
+      <a href='/favorite/<%= @joke.id %>' name='favorite' value='<%= @joke.id %>' %>Favorite this joke.</a>
+    <% end %>
   <% end %>
 </section>

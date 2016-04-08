@@ -1,13 +1,13 @@
-
 post '/jokes' do
-  API_KEY = "4tlyur24RtmshjkbmQB7t5PR1OQ9p1mYyIdjsn8kgVQRQBscQX"
+  API_KEY = ENV['JOKE_API_KEY']
   API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
-  MAX_JOKES = 2
+  MAX_JOKES = 10
   MIN_JOKE_RATING = 0
   @errors = []
 
   	puts params[:keywords]
-
+  @keywords = params[:keywords]
+  @category = params[:category]
 	# Data cleanse
 	keywords = Tag.clean_tags_array(params[:keywords])
 	keywords_list = Tag.tags_list(keywords)
@@ -18,7 +18,7 @@ post '/jokes' do
 
   # Keywords Required
   if keywords.size > 0
-  
+
   	if Tag.site_tags_exist?(tag_names)
 		@joke = Joke.get_random_joke(tag_names)
  	else
@@ -31,6 +31,8 @@ post '/jokes' do
 		end
 
 		# Query Joke API, create hash and add jokes
+		puts "CONTACTING URL: #{url}"
+		puts "USING KEY: #{API_KEY}"
 
 		response = Unirest.get url,
 		  headers:{
@@ -40,7 +42,6 @@ post '/jokes' do
 
 		if response
 		  joke_collection = response.body
-		  puts "URL: #{url}"
 		  puts "JOKE_COLLECTION: #{joke_collection}"
 		  joke_collection.each do |joke_data|
 		  	puts "JOKE DATA: #{joke_data}"
@@ -64,24 +65,33 @@ post '/jokes' do
   	status 422
 	@errors << "Keywords is required"
   end
-
+  if !current_user.jokes.include? @joke
+    @display_button = true
+  else
+    @display_button = false
+  end
   if !@joke
   	@errors << "No results found."
   end
   erb :'/index'
 end
 
-# get '/favorite' do
-#   redirect to '/logout' unless current_user
-#   @joke = Joke.find(params[:joke-id])
-#   @user_joke = UserJoke.new
-#   @user_joke.user = current_user
-#   @user_joke.joke = @joke
-#   if @user_joke.save
-#     redirect to "/profile/#{current_user.id}"
-#   else
-#     status 422
-#     @errors = "Something went wrong"
-#     erb :'index'
-#   end
-# end
+get '/favorite/:id' do
+  redirect to '/logout' unless current_user
+  @joke = Joke.find(params[:id])
+  if !current_user.jokes.include? @joke
+    @user_joke = UserJoke.new
+    @user_joke.user = current_user
+    @user_joke.joke = @joke
+    puts @user_joke
+    if @user_joke.save
+      redirect to "/profile/#{current_user.id}"
+    else
+      status 500
+      @errors = "Something went wrong"
+      erb :'index'
+    end
+  else
+    redirect to "/profile/#{current_user.id}"
+  end
+end
