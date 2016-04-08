@@ -31,6 +31,7 @@ post '/jokes' do
 
 		# Query Joke API, create hash and add jokes
 		puts "CONTACTING URL: #{url}"
+		puts "USING KEY: #{API_KEY}"
 
 		response = Unirest.get url,
 		  headers:{
