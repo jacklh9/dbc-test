@@ -1,6 +1,13 @@
 class Joke < ActiveRecord::Base
-  validates :content, presence: true
+  validates :content, :joke_hash, presence: true
 
   has_many :tags, through: :joke_tags
   has_many :users, through: :user_jokes
+
+  MAX_HASH_LENGTH = 50
+
+  def hash=(joke)
+    self.joke_hash = Digest::MD5.new(joke)[0..MAX_HASH_LENGTH]
+  end
+
 end
