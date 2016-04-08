@@ -4,13 +4,14 @@
 
 <form method="post" action="/jokes">
 
-  <label>Keywords: (comma-separated)</label>
+  <label>Keywords:</label>
   <input name="keywords" placeholder="required">
 
-  <label>Categories: (comma-separated)</label>
-  <input name="categories" placeholder="optional">
+  <label>Category</label>
+  <input name="category" placeholder="optional">
 
   <input type="submit" name="submit" text="Find Jokes">
 
 </form>
 
+<%= erb :'jokes/_show', locals: { joke: @joke } %>
