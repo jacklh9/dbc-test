@@ -31,7 +31,7 @@ get '/tags/:id/user' do
 	if current_user
 		@user = current_user
 		@tag = Tag.find_by(id: params[:id])
-		@jokes = Joke.get_joke([@tag])
+		@jokes = Joke.get_jokes([@tag])
 		@MAX_JOKE_TITLE = MAX_JOKE_TITLE
 		erb :'/tags/index'
 	else
