@@ -1,5 +1,3 @@
-
-
 # Show system tags
 get '/tags' do
 	@user = nil  # Explicitly stating that system tags are indicated by user_id = nil

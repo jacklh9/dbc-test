@@ -1,60 +1,51 @@
+# Index
+# For performance reasons, we don't 
+# show the entire list of jokes. Just
+# the tags list.
+get '/jokes' do
+  redirect to '/tags'
+end
+
+# Show
 get '/jokes/:id' do
 	@joke = Joke.find_by(id: params[:id])
-  if current_user && (!current_user.favorite_jokes.include? @joke)
-    @display_button = true
-  else
-    @display_button = false
-  end
 	halt '404' if @joke.nil?
 	erb :'/jokes/show'
 end
 
-
+# Create
 post '/jokes' do
-  @errors = []
-
   # Keywords Required
   category_names_dirty = params[:category]
   keyword_names_dirty = params[:keywords]
 
-  Joke.search_jokes(keyword_names: keyword_names_dirty,
+  @joke = Joke.search_jokes(keyword_names: keyword_names_dirty,
     category_names: category_names_dirty
     )
 
-  # Favorites button: to display or not to display...
-  if current_user && (!current_user.favorite_jokes.include? @joke)
-    @display_button = true
-  else
-    @display_button = false
-  end
-
-  if !@joke
-  	@errors << "No results found."
-  end
+  @errors = @joke.errors
 
   erb :'/index'
 end
 
+# New Favorite Joke
 post '/favorite/:id' do
-  redirect to '/login' unless current_user
+  redirect to '/register' unless current_user
   @joke = Joke.find(params[:id])
-  if current_user && (!current_user.favorite_jokes.include? @joke)
-    @user_joke = UserJoke.new
-    @user_joke.user = current_user
-    @user_joke.joke = @joke
-    puts @user_joke
-    if @user_joke.save
-      redirect to "/profile/#{current_user.id}"
-    else
+  halt '404' if @joke.nil?
+  if !current_user.has_this_favorite? @joke
+    begin
+      current_user.favorite_jokes << @joke
+    rescue
+      @errors = "Something went wrong attempting to favorite this joke."
       status 500
-      @errors = "Something went wrong"
-      erb :'index'
+      erb :"/jokes/#{params[:id]}"
     end
-  else
-    redirect to "/profile/#{current_user.id}"
   end
+  redirect to "/profile/#{current_user.id}"
 end
 
+# Delete Favorite
 delete '/favorite/:id' do
   redirect to '/login' unless current_user
   @joke = Joke.find_by(id: params[:id])
