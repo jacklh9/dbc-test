@@ -95,24 +95,28 @@ class Joke < ActiveRecord::Base
     keywords = args[:keywords]
     categories = (args[:categories]) ? args[:categories] : []
 
-    api_response = Joke.send_api_query(keywords: keywords, categories: categories)
-    joke_collection = (api_response) ? api_response.body : nil
+    begin
+      api_response = Joke.send_api_query(keywords: keywords, categories: categories)
+      joke_collection = (api_response) ? api_response.body : nil
 
-    if joke_collection
-      status = joke_collection.all? do |joke_data|
-        joke = Joke.add_joke(joke_data["joke"])
-        categories.concat(Tag.clean_tags_array(joke_data["category"])) if joke_data["category"] # Add API's own categories to our database of tags
-        categories.uniq!  # Remove duplicates introduced
+      if joke_collection
+        status = joke_collection.all? do |joke_data|
+          joke = Joke.add_joke(joke_data["joke"])
+          categories = Tag.merge(categories,Tag.clean_tags_array(joke_data["category"])) if joke_data["category"] # Add API's own categories to our database of tags
 
-        if joke && joke.add_missing_tags(tag_names_collection: keywords, tag_type_name: USER_QUERY) && joke.add_missing_tags(tag_names_collection: categories)
-          status = true
-        else
-          puts "500:Internal Server Error"
-          status = false
-        end
-      end # end joke_data
-    else 
-      status = false
+          if joke && joke.add_missing_tags(tag_names_collection: keywords, tag_type_name: USER_QUERY) && joke.add_missing_tags(tag_names_collection: categories)
+            status = true
+          else
+            puts "500:Internal Server Error"
+            status = false
+          end
+        end # end joke_data
+      else 
+        status = false
+      end
+    rescue
+      puts "500:Internal Server Error"
+      status = false      
     end
     status
   end
@@ -134,7 +138,7 @@ class Joke < ActiveRecord::Base
 
       # Categories (optional)
       if !category_names.blank?
-        url += "category=#{category_names}"
+        url += "&category=#{category_names}"
       end
 
       puts "*" * 50
@@ -145,6 +149,7 @@ class Joke < ActiveRecord::Base
          "X-Mashape-Key" => API_KEY,
          "Accept" => "application/json"
         }
+      puts "RESPONSE BODY: #{response.body}"
       response
   end
 
