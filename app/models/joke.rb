@@ -8,7 +8,57 @@ class Joke < ActiveRecord::Base
 
   MAX_HASH_LENGTH = 20
 
-  attr_accessor :errors
+  # Given a collection of tag names, associates
+  # those in the database with the joke.
+  # If user explictly passed in a tag_type desired,
+  # confirms tag is set to tag_type else sets to tag_type.
+  # Returns true if successful, false if any failures.
+  def add_missing_tags(args={})
+    tag_names_collection = args[:tag_names_collection]
+    tag_type_name = args[:tag_type_name]
+    if tag_names_collection
+      tag_names_collection.all? do |tag_name|
+        tag_type = TagType.find_by(name: tag_type_name)
+        tag = Tag.find_or_create_by(name: tag_name)
+
+        # Set if user explicitly wants a tag_type set
+        if tag_type && (tag.tag_type != tag_type)
+          tag.tag_type = tag_type
+        end
+
+        # Associate joke to tag
+        self.tags << tag unless self.has_tag?(tag)
+
+        # Confirm all's as expected
+        tag.save && self.has_tag?(tag)
+      end
+    end
+  end
+
+  def self.get_jokes(args={})
+    keywords = args[:keywords]
+    categories = (args[:categories]) ? args[:categories] : []
+    tag_names_collection = Tag.merge(keywords,categories)
+    Joke.populate_database_if_not_exist(keywords: keywords, categories: categories)
+    jokes = Joke.joins(:tags).where(tags: { name: tag_names_collection })
+    (jokes.size > 0) ? jokes.order(content: :ASC) : nil
+  end
+
+  def self.get_random_joke(args={})
+    keywords = args[:keywords]
+    categories = args[:categories]
+    tag_names_collection = Tag.merge(keywords,categories)
+    Joke.populate_database_if_not_exist(keywords: keywords, categories: categories)
+    # OR query
+    jokes = Joke.joins(:tags).where(tags: { name: tag_names_collection })
+  	(jokes.size > 0) ? jokes.sample : nil
+  end
+
+  def has_tag?(tag)
+    self.tags.include? tag
+  end
+
+  private
 
   # Returns joke object if joke already exists or
   # add was successful.
@@ -18,124 +68,59 @@ class Joke < ActiveRecord::Base
     (existing_joke) ? existing_joke : Joke.create(content: content, joke_hash: joke_hash)
   end
 
-  # Given a collection of tag names, associates
-  # those in the database with the joke.
-  # Returns true if successful, false if any failures
-  def add_missing_tags(args={})
-    tag_names = args.tag_names
-    tag_type = args.tag_type
-    if tag_names
-      tag_names.all? do |tag_name|
-        tag = Tag.find_or_create_by(name: tag_name, tag_type: tag_type)
-        self.tags << tag if !self.has_tag? tag
-        self.has_tag? tag
-      end
+  def self.generate_hash(content)
+    md5 = Digest::MD5.new
+    md5 << "#{content}"
+    joke_hash = md5.hexdigest 
+    joke_hash[0..MAX_HASH_LENGTH]
+  end
+
+  # Queries local if this query has been run before
+  # else queries remote API. 
+  # Returns success if db has the jokes.
+  def self.populate_database_if_not_exist(args={})
+    keywords = args[:keywords]
+    categories = args[:categories]
+
+    unless (Tag.queried_by_past_users?(keywords) && Tag.is_cached?(categories))
+      # Populate database with several jokes of these keywords/categories.
+      Joke.query_api_for_jokes(keywords: keywords, categories: categories)
     else
       true
     end
   end
 
-  def self.generate_hash(content)
-    md5 = Digest::MD5.new
-    md5 << "#{content}"
-  	joke_hash = md5.hexdigest 
-    joke_hash[0..MAX_HASH_LENGTH]
-  end
-
-  def self.get_jokes(tag_names)
-    jokes = Joke.joins(:tags).where(tags: { name: tag_names })
-    (jokes.size > 0) ? jokes : nil
-  end
-
-  def self.get_random_joke(tag_names)
-    # OR query
-    # tags = Tag.where(name: tag_names)
-    # jokes = tags.map{|tag| tag.jokes }.flatten
-
-    # OR query
-    jokes = Joke.joins(:tags).where(tags: { name: tag_names })
-  	(jokes.size > 0) ? jokes.sample : nil
-  end
-
-  def has_tag?(tag)
-    self.tags.include? tag
-  end
-
-
-  # Queries local if this query has been run before
-  # else queries API and returns a random joke.
-  # Errors or indication of no joke found if joke.errors.size > 0  
-  def self.search_jokes(args)
-    keyword_names_dirty = args.keyword_names
-
-    errors = []
-    if keyword_names_dirty.blank?
-      status 422
-      errors << "A keyword must be specified"
-    else
-      # Data cleanse
-      keywords = Tag.clean_tags_array(keyword_names_dirty)
-      keyword_names = Tag.tags_list(keywords)
-      categories = Tag.clean_tags_array(category_names_dirty)
-      category_names = Tag.tags_list(categories)
-      tag_names = keyword_names
-      tag_names.concat(category_names)
-
-      if !Tag.queried_by_past_users?(tag_names)
-        response = Joke.query_api_for_jokes(keyword_names: keyword_names, category_names: category_names)
-        if response.success
-          joke = Joke.get_random_joke(tag_names)
-        else
-          joke = Joke.new
-          joke.errors = response.errors
-        end
-      else
-        joke = Joke.get_random_joke(tag_names)
-      end
-      joke
-    end
-  end
-
-  private
-
-
-  # Returns a response object.
-  # response.errors is an array of errors, if any
-  # response.success is true if no errors
+  # Returns true if no errors, else false
   def self.query_api_for_jokes(args={})
-    keyword_names = args.keyword_names
-    category_names = args.category_names
-    response = {}
-    response.errors = []
+    keywords = args[:keywords]
+    categories = (args[:categories]) ? args[:categories] : []
 
-    api_response = Joke.send_api_query(keyword_names: keyword_names, category_names: category_names)
+    api_response = Joke.send_api_query(keywords: keywords, categories: categories)
     joke_collection = (api_response) ? api_response.body : nil
 
     if joke_collection
-      response.success = joke_collection.all? do |joke_data|
-        tag_names.concat(Tag.clean_tags_array(joke_data["category"])) # Add API's own categories to our database of tags
-        tag_names.uniq!  # Remove duplicates introduced
-
+      status = joke_collection.all? do |joke_data|
         joke = Joke.add_joke(joke_data["joke"])
-        if !joke.nil? && joke.add_missing_tags(tag_names: keywords_list, tag_type: 'user_queried') && joke.add_missing_tags(tag_names: categories_list, tag_type: 'api_result')
-          true
+        categories.concat(Tag.clean_tags_array(joke_data["category"])) if joke_data["category"] # Add API's own categories to our database of tags
+        categories.uniq!  # Remove duplicates introduced
+
+        if joke && joke.add_missing_tags(tag_names_collection: keywords, tag_type_name: USER_QUERY) && joke.add_missing_tags(tag_names_collection: categories)
+          status = true
         else
-          status 500
-          response.errors << "500:Internal Server Error"
-          false
+          puts "500:Internal Server Error"
+          status = false
         end
       end # end joke_data
     else 
-      status 503
-      response.errors << "503:Service Unavailable"
-      response.success = false
+      status = false
     end
-    response
+    status
   end
 
+  # Returns API response object
   def self.send_api_query(args = {})
-      keyword_names = args.keyword_names
-      category_names = args.category_names
+      keyword_names = Tag.tags_list(args[:keywords])
+      category_names = Tag.tags_list(args[:categories])
 
       # Joke API defined in environment.rb
       url = API_URL
@@ -152,11 +137,15 @@ class Joke < ActiveRecord::Base
         url += "category=#{category_names}"
       end
 
+      puts "*" * 50
+      puts "DATETIME: #{DateTime.now}"
+      puts "QUERY: #{url}"
       response = Unirest.get url,
         headers:{
          "X-Mashape-Key" => API_KEY,
          "Accept" => "application/json"
         }
+      response
   end
 
 end

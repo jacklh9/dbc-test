@@ -1,17 +1,19 @@
+<section id="joke-index">
 <table>
 	<thead>
 		<tr>
-			<th><%= title %></th>
+			<th colspan="2"><%= title %></th>
 		</tr>
 	</thead>
 	<tbody>
 		<% if @jokes %>
-			<% @jokes.each do |joke| %>
+			<% @jokes.each_with_index do |joke,i| %>
 				<% snippet = joke.content[0..max_joke_title_length] %>
 				<tr>
-					<td><a href="/jokes/<%= joke.id %>"><%= snippet %></a></td>
+					<td><%= i %>.</td><td><a href="/jokes/<%= joke.id %>"><%= snippet %> ... </a></td>
 				</tr>
 			<% end %>
 		<% end %>
 	</tbody>
 </table>
+</section>

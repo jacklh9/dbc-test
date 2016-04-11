@@ -32,6 +32,7 @@ API_KEY = ENV['JOKE_API_KEY']
 MAX_JOKES = 10
 MIN_JOKE_RATING = 0
 API_URL = "https://webknox-jokes.p.mashape.com/jokes/search?"
+USER_QUERY = 'user_query'
 
 # Some helper constants for path-centric logic
 APP_ROOT = Pathname.new(File.expand_path('../../', __FILE__))

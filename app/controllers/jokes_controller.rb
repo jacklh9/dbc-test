@@ -3,43 +3,57 @@
 # show the entire list of jokes. Just
 # the tags list.
 get '/jokes' do
+  set_previous_page
   redirect to '/tags'
 end
 
 # Show
 get '/jokes/:id' do
+  set_previous_page
 	@joke = Joke.find_by(id: params[:id])
 	halt '404' if @joke.nil?
 	erb :'/jokes/show'
 end
 
-# Create
+# Joke Search page form results from the user.
 post '/jokes' do
+  set_previous_page
   # Keywords Required
-  category_names_dirty = params[:category]
   keyword_names_dirty = params[:keywords]
+  category_names_dirty = params[:categories]
 
-  @joke = Joke.search_jokes(keyword_names: keyword_names_dirty,
-    category_names: category_names_dirty
-    )
+  # Data cleanse
+  keywords = Tag.clean_tags_array(keyword_names_dirty)
+  categories = Tag.clean_tags_array(category_names_dirty)
 
-  @errors = @joke.errors
+  @errors = []
 
+  if keywords.count <= 0
+    @errors << "A keyword must be specified"
+  else
+    @joke = Joke.get_random_joke(keywords: keywords, categories: categories)
+    if !@joke
+      @errors << "No matches found."
+    end
+  end
+  
+  @keywords = params[:keywords]
+  @categories = params[:categories]
   erb :'/index'
 end
 
 # New Favorite Joke
 post '/favorite/:id' do
+  set_previous_page
   redirect to '/register' unless current_user
   @joke = Joke.find(params[:id])
   halt '404' if @joke.nil?
-  if !current_user.has_this_favorite? @joke
+  unless current_user.has_this_favorite?(@joke) 
     begin
       current_user.favorite_jokes << @joke
     rescue
-      @errors = "Something went wrong attempting to favorite this joke."
       status 500
-      erb :"/jokes/#{params[:id]}"
+      redirect "/jokes/#{params[:id]}"
     end
   end
   redirect to "/profile/#{current_user.id}"
@@ -47,6 +61,7 @@ end
 
 # Delete Favorite
 delete '/favorite/:id' do
+  set_previous_page
   redirect to '/login' unless current_user
   @joke = Joke.find_by(id: params[:id])
   current_user.favorite_jokes.delete(@joke)

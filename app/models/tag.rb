@@ -20,6 +20,22 @@ class Tag < ActiveRecord::Base
     end
   end
 
+  # Returns true if all the tags are nil or cached in the database either
+  # by user query or API categories returned.
+  def self.is_cached?(tag_names_collection)
+    if tag_names_collection
+      tag_names_collection.all?{|tag_name| (Tag.find_by(name: tag_name, user_id: nil)) ? true : false }
+    else
+      true
+    end
+  end
+
+  def self.merge(a,b)
+    a = (a) ? a : []
+    b = (b) ? b : []
+    a.concat(b).uniq
+  end
+
   # Returns a comma-separated list given a collection of tags
   def self.tags_list(tags_array)
   	if tags_array
@@ -32,8 +48,9 @@ class Tag < ActiveRecord::Base
   # Have all the site-owned tags (user_id: nil) already been explicitly queried 
   # by a user in the past and therefore the max results have already 
   # been returned before and thus already exist in the database?
-  def self.queried_by_past_users?(tag_names)
-  	tag_names.all?{|tag| Tag.find_by(name: tag, tag_type: 'user_query', user_id: nil) }
+  def self.queried_by_past_users?(tag_names_collection)
+    tag_type = TagType.find_by(name: USER_QUERY)
+  	tag_names_collection.all?{|tag_name| (Tag.find_by(name: tag_name, tag_type: tag_type, user_id: nil)) ? true : false }
   end
 
 end
