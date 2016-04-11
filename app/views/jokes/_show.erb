@@ -1,14 +1,18 @@
-<section>
+<section id="joke-detail">
   <% if @joke %>
     <p><%= "#{@joke.content}" %></p>
-    <% if current_user && @display_button%>
+    <% if current_user && !@current_user.has_this_favorite?(@joke) %>
       <form action='/favorite/<%= @joke.id %>' method='POST'>
-      <input type='submit' name='submit' value='Favorite this joke'/>
+        <input type='submit' name='submit' value='Favorite this joke'/>
       </form>
-      <% elsif current_user && !@display_button %>
+    <% elsif current_user && (@current_user.has_this_favorite?(@joke)) %>
       <form action='/favorite/<%= @joke.id %>' method='POST'>
         <input type='hidden' name='_method' value='DELETE'>
-      <input type='submit' name='submit' value='Remove from favorites'/>
+        <input type='submit' name='submit' value='Remove from favorites'/>
+      </form>
+    <% else %>
+      <form action='/register' method='GET'>
+        <input type='submit' name='submit' value='Favorite this joke'/>
       </form>
     <% end %>
   <% end %>

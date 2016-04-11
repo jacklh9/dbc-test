@@ -28,6 +28,10 @@ class User < ActiveRecord::Base
     plain_text_password.length >= MIN_PASSWORD_LENGTH
   end
 
+  def has_this_favorite?(joke)
+    self.favorite_jokes.include? joke
+  end
+
 end
 
 
