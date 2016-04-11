@@ -33,7 +33,7 @@ post '/jokes' do
   else
     @joke = Joke.get_random_joke(keywords: keywords, categories: categories)
     if !@joke
-      @errors << "No matches found."
+      @errors << "No matches found or service unavailable."
     end
   end
   
