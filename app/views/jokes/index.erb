@@ -6,4 +6,6 @@
 
 <%= erb :'/jokes/_index', layout: false, locals: { max_joke_title_length: @max_joke_title_length, title: @title } %>
 
-<%= erb :'_previous_button' %>
+<form method="get" action="/tags">
+	<input class="return_button" type="submit" value="Return">
+</form>

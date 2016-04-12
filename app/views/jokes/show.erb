@@ -2,4 +2,6 @@
 
 <%= erb :'/jokes/_show' %>
 
-<%= erb :'_previous_button' %>
+<form method="get" action="/tags/<%= @joke.tags.first.id %>">
+	<input class="return_button" type="submit" value="Return">
+</form>
