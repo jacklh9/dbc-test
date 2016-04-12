@@ -1,5 +1,6 @@
 body {
   font-size: 14px;
+  font-family: serif;
   padding-bottom: 4em;
   margin: 0 auto;
   overflow: auto;
@@ -7,9 +8,40 @@ body {
   background-image: url('/imgs/brick.jpg');
 }
 
-* li, td, th, p {
-	background-color: white;
+p {
+	color: white;
+	background-color: black;
+	padding: 15px;
+}
+
+* h1, h2, h3, lh, li, a {
+	float: left;
+	color: white;
+	background-color: red;
 	padding: 10px;
+	border-color: black;
+	border-style: solid;
+	border-width: .5px
+}
+
+a {
+	text-decoration: none;
+}
+
+li {
+	background-color: gray;
+}
+
+
+#site-title-container {
+	background-color: red;
+}
+
+#site-title-container h1,h2,h3{
+	color: white;
+	border-style: solid;
+	border-color: black;
+	border-width: 5px;
 }
 
 header {
@@ -36,6 +68,25 @@ main {
 
 /* **************  FORMS ************  */
 
+form {
+	clear: both;
+	display: block;
+}
+
+label {
+	margin: 10px;
+	padding: 5px	;
+	color: white;
+	background-color: black
+}
+
+form input {
+	color: white;
+	background-color: black;
+	height: 40px;
+	margin: 10px;
+}
+
 form#list-item {
 	border-style: solid;
 	border-color: black;
@@ -44,6 +95,8 @@ form#list-item {
 }
 
 form input {
+	margin-top: 10px;
+	pading: 5px;
 	display: block;
 }
 
@@ -78,22 +131,46 @@ label.reg_log {
 	display: none;
 }
 
-/* ************* AUCTIONS ****************** */
+/* ************* TABLES ****************** */
 
 table {
 	width: 100%;
 }
 
-
-table, th, td {
+table th {
+	color: white;
+	background-color: red;	
 	border-style: solid;
 	border-color: black;
 	border-width: .5px;
 	padding: 5px;
 }
 
-/* ************* AUCTION ITEM DETAIL **** */
-#bid-container {
-
+table td {
+	color: white;
+	background-color: black;
+	border-style: solid;
+	border-color: gray;
+	border-width: .5px;
+	padding: 5px;
 }
 
+table a {
+	color: white;
+	background-color: black;
+	text-decoration: none;
+	border-style: none;
+	border-color: none;
+}
+
+
+/* ************* RELATED ************* */
+#related-keywords ul {
+	padding: 0px;
+	display: block;
+}
+
+#related-keywords lh, li {
+	display: inline;
+	text-decoration: none;
+}
