@@ -1,13 +1,11 @@
 # New
 get '/register' do
-  set_previous_page
   @user = User.new();
   erb :'/users/register'
 end
 
 # Create
 post '/register' do
-  set_previous_page
   @user = User.new(params[:user])
 
   if User.min_passwd_length?(params[:user][:password]) && @user.save
@@ -23,13 +21,11 @@ end
 
 # Login
 get '/login' do
-  set_previous_page
   @user = User.new
   erb :'/users/login'
 end
 
 post '/login' do
-  set_previous_page
   user = User.find_by(email: params[:user][:email])
   if user != nil && user.authenticate(params[:user][:password])
       session[:id] = user.id
@@ -44,7 +40,6 @@ end
 
 # Show
 get '/profile/:id' do
-  set_previous_page
   @profile_user = User.find_by(id: params[:id])
   halt '404' if @profile_user.nil?
   if current_user
@@ -58,7 +53,6 @@ end
 
 # Logout
 get '/logout' do
-  set_previous_page
 	if current_user
 		erb :'/users/logout'
 	else
