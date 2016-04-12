@@ -3,13 +3,11 @@
 # show the entire list of jokes. Just
 # the tags list.
 get '/jokes' do
-  set_previous_page
   redirect to '/tags'
 end
 
 # Show
 get '/jokes/:id' do
-  set_previous_page
 	@joke = Joke.find_by(id: params[:id])
 	halt '404' if @joke.nil?
 	erb :'/jokes/show'
@@ -17,7 +15,6 @@ end
 
 # Joke Search page form results from the user.
 post '/jokes' do
-  set_previous_page
   # Keywords Required
   keyword_names_dirty = params[:keywords]
   category_names_dirty = params[:categories]
@@ -44,7 +41,6 @@ end
 
 # New Favorite Joke
 post '/favorite/:id' do
-  set_previous_page
   redirect to '/register' unless current_user
   @joke = Joke.find(params[:id])
   halt '404' if @joke.nil?
@@ -61,7 +57,6 @@ end
 
 # Delete Favorite
 delete '/favorite/:id' do
-  set_previous_page
   redirect to '/login' unless current_user
   @joke = Joke.find_by(id: params[:id])
   current_user.favorite_jokes.delete(@joke)
