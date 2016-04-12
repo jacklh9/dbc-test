@@ -1,7 +1,3 @@
 <%= erb :'_errors' %>
 
-<%= erb :'/jokes/_show' %>
-
-<form method="get" action="/tags/<%= @joke.tags.first.id %>">
-	<input class="return_button" type="submit" value="Return">
-</form>
+<%= erb :'/jokes/_show', locals: { joke: @joke } %>

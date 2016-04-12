@@ -1,0 +1,9 @@
+<section id="related-keywords">
+	<ul>
+		<% if joke && joke.tags %>
+			<% joke.tags.order(name: :ASC).each do |tag| %>
+				<li><a href="/tags/<%= tag.id %>"><%= tag.name %></a></li>
+			<% end %>
+		<% end %>
+	</ul>
+</section>
